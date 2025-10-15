@@ -1,0 +1,284 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, Star, TrendingUp, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ProductCard from "@/components/ProductCard";
+import CategoryCard from "@/components/CategoryCard";
+import { Badge } from "@/components/ui/badge";
+
+export default function Home() {
+  const categories = [
+    {
+      name: "Dogs",
+      icon: "🐕",
+      image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800",
+      href: "/products?category=dogs",
+      productCount: 450,
+    },
+    {
+      name: "Cats",
+      icon: "🐈",
+      image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800",
+      href: "/products?category=cats",
+      productCount: 380,
+    },
+    {
+      name: "Birds",
+      icon: "🦜",
+      image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=800",
+      href: "/products?category=birds",
+      productCount: 150,
+    },
+    {
+      name: "Small Pets",
+      icon: "🐹",
+      image: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=800",
+      href: "/products?category=small-pets",
+      productCount: 200,
+    },
+  ];
+
+  const featuredProducts = [
+    {
+      id: "1",
+      name: "Premium Dog Food - Grain Free Formula",
+      price: 49.99,
+      originalPrice: 69.99,
+      image: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600",
+      rating: 4.8,
+      reviews: 234,
+      badge: "Best Seller",
+      category: "Dogs",
+    },
+    {
+      id: "2",
+      name: "Interactive Cat Toy with Feathers",
+      price: 19.99,
+      image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600",
+      rating: 4.6,
+      reviews: 189,
+      category: "Cats",
+    },
+    {
+      id: "3",
+      name: "Orthopedic Pet Bed - Memory Foam",
+      price: 79.99,
+      originalPrice: 99.99,
+      image: "https://images.unsplash.com/photo-1617369120004-4fc4b71c1626?w=600",
+      rating: 4.9,
+      reviews: 412,
+      badge: "Top Rated",
+      category: "Dogs",
+    },
+    {
+      id: "4",
+      name: "Natural Bird Seed Mix - 5lb",
+      price: 24.99,
+      image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600",
+      rating: 4.7,
+      reviews: 156,
+      category: "Birds",
+    },
+    {
+      id: "5",
+      name: "Cat Litter Box - Self Cleaning",
+      price: 129.99,
+      image: "https://images.unsplash.com/photo-1602562528874-3bc8c6bb55fa?w=600",
+      rating: 4.5,
+      reviews: 98,
+      badge: "New",
+      category: "Cats",
+    },
+    {
+      id: "6",
+      name: "Dog Grooming Kit - Professional",
+      price: 39.99,
+      originalPrice: 54.99,
+      image: "https://images.unsplash.com/photo-1616794897583-ffdf90aa1c0d?w=600",
+      rating: 4.8,
+      reviews: 267,
+      category: "Dogs",
+    },
+    {
+      id: "7",
+      name: "Small Pet Habitat - Deluxe Edition",
+      price: 89.99,
+      image: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600",
+      rating: 4.7,
+      reviews: 134,
+      category: "Small Pets",
+    },
+    {
+      id: "8",
+      name: "Vitamin Supplements for Cats",
+      price: 29.99,
+      image: "https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=600",
+      rating: 4.6,
+      reviews: 201,
+      badge: "Vet Approved",
+      category: "Cats",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=1600')] opacity-5 bg-cover bg-center" />
+        <div className="container mx-auto px-4 py-20 md:py-32 relative">
+          <div className="max-w-3xl">
+            <Badge className="mb-4 text-sm px-4 py-1">
+              🎉 New Arrivals Just Landed!
+            </Badge>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Everything Your Pet Needs,{" "}
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                All in One Place
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
+              Premium veterinary supplies, nutritious food, fun toys, and wellness essentials for dogs, cats, birds, and small pets.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button asChild size="lg" className="text-lg">
+                <Link href="/products">
+                  Shop Now <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="text-lg">
+                <Link href="/blog">Pet Care Tips</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Elements */}
+        <div className="absolute top-20 right-20 text-6xl animate-bounce hidden lg:block">
+          🐾
+        </div>
+        <div className="absolute bottom-20 right-40 text-5xl animate-pulse hidden lg:block">
+          ❤️
+        </div>
+      </section>
+
+      {/* Categories Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            Shop by Pet Type
+          </h2>
+          <p className="text-muted-foreground text-lg">
+            Find everything your furry, feathered, or scaly friend needs
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {categories.map((category) => (
+            <CategoryCard key={category.name} {...category} />
+          ))}
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Featured Products
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Handpicked favorites loved by pets and their owners
+            </p>
+          </div>
+          <Button asChild variant="outline">
+            <Link href="/products">
+              View All <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredProducts.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))}
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="bg-muted/30 py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Why Pet Parents Love Vetcart
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              More than just a store - we're your pet care partner
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center p-6 rounded-xl bg-background shadow-sm">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
+                <Award className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                Vet-Approved Quality
+              </h3>
+              <p className="text-muted-foreground">
+                All products are carefully selected and approved by licensed veterinarians
+              </p>
+            </div>
+            <div className="text-center p-6 rounded-xl bg-background shadow-sm">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary/10 text-secondary mb-4">
+                <Star className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                Trusted by Thousands
+              </h3>
+              <p className="text-muted-foreground">
+                Join 50,000+ happy pet parents who trust us with their pets' well-being
+              </p>
+            </div>
+            <div className="text-center p-6 rounded-xl bg-background shadow-sm">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 text-accent mb-4">
+                <TrendingUp className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                Best Value Guaranteed
+              </h3>
+              <p className="text-muted-foreground">
+                Premium quality at competitive prices with frequent deals and discounts
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 md:p-12 text-center text-white">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            Get Expert Pet Care Tips
+          </h2>
+          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+            Subscribe to our newsletter for exclusive deals, new arrivals, and expert advice from veterinarians
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 px-6 py-3 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-white"
+            />
+            <Button size="lg" variant="secondary">
+              Subscribe
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}
