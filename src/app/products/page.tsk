@@ -1,0 +1,530 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { SlidersHorizontal, X } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ProductCard from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+
+export default function ProductsPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState([0, 200]);
+  const [sortBy, setSortBy] = useState("featured");
+
+  const allProducts = [
+    {
+      id: "1",
+      name: "Premium Dog Food - Grain Free Formula",
+      price: 49.99,
+      originalPrice: 69.99,
+      image: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600",
+      rating: 4.8,
+      reviews: 234,
+      badge: "Best Seller",
+      category: "dogs",
+      brand: "PetPro",
+      condition: "nutrition",
+    },
+    {
+      id: "2",
+      name: "Interactive Cat Toy with Feathers",
+      price: 19.99,
+      image: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=600",
+      rating: 4.6,
+      reviews: 189,
+      category: "cats",
+      brand: "FelineFun",
+      condition: "toys",
+    },
+    {
+      id: "3",
+      name: "Orthopedic Pet Bed - Memory Foam",
+      price: 79.99,
+      originalPrice: 99.99,
+      image: "https://images.unsplash.com/photo-1617369120004-4fc4b71c1626?w=600",
+      rating: 4.9,
+      reviews: 412,
+      badge: "Top Rated",
+      category: "dogs",
+      brand: "ComfortPaws",
+      condition: "comfort",
+    },
+    {
+      id: "4",
+      name: "Natural Bird Seed Mix - 5lb",
+      price: 24.99,
+      image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600",
+      rating: 4.7,
+      reviews: 156,
+      category: "birds",
+      brand: "AvianCare",
+      condition: "nutrition",
+    },
+    {
+      id: "5",
+      name: "Cat Litter Box - Self Cleaning",
+      price: 129.99,
+      image: "https://images.unsplash.com/photo-1602562528874-3bc8c6bb55fa?w=600",
+      rating: 4.5,
+      reviews: 98,
+      badge: "New",
+      category: "cats",
+      brand: "CleanPaws",
+      condition: "hygiene",
+    },
+    {
+      id: "6",
+      name: "Dog Grooming Kit - Professional",
+      price: 39.99,
+      originalPrice: 54.99,
+      image: "https://images.unsplash.com/photo-1616794897583-ffdf90aa1c0d?w=600",
+      rating: 4.8,
+      reviews: 267,
+      category: "dogs",
+      brand: "GroomMaster",
+      condition: "grooming",
+    },
+    {
+      id: "7",
+      name: "Small Pet Habitat - Deluxe Edition",
+      price: 89.99,
+      image: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600",
+      rating: 4.7,
+      reviews: 134,
+      category: "small-pets",
+      brand: "HabitatPro",
+      condition: "housing",
+    },
+    {
+      id: "8",
+      name: "Vitamin Supplements for Cats",
+      price: 29.99,
+      image: "https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=600",
+      rating: 4.6,
+      reviews: 201,
+      badge: "Vet Approved",
+      category: "cats",
+      brand: "VitaPet",
+      condition: "wellness",
+    },
+    {
+      id: "9",
+      name: "Dog Dental Chew Treats",
+      price: 15.99,
+      image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600",
+      rating: 4.7,
+      reviews: 324,
+      category: "dogs",
+      brand: "DentalCare",
+      condition: "dental",
+    },
+    {
+      id: "10",
+      name: "Cat Scratching Post Tower",
+      price: 64.99,
+      image: "https://images.unsplash.com/photo-1611003228941-98852ba62227?w=600",
+      rating: 4.8,
+      reviews: 189,
+      category: "cats",
+      brand: "FelineFun",
+      condition: "toys",
+    },
+    {
+      id: "11",
+      name: "Bird Cage - Spacious Design",
+      price: 119.99,
+      originalPrice: 149.99,
+      image: "https://images.unsplash.com/photo-1535083783855-76ae62b2914e?w=600",
+      rating: 4.6,
+      reviews: 87,
+      category: "birds",
+      brand: "AvianCare",
+      condition: "housing",
+    },
+    {
+      id: "12",
+      name: "Dog Harness - No-Pull Design",
+      price: 27.99,
+      image: "https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?w=600",
+      rating: 4.5,
+      reviews: 278,
+      category: "dogs",
+      brand: "WalkSafe",
+      condition: "accessories",
+    },
+  ];
+
+  const categories = [
+    { id: "dogs", label: "Dogs", icon: "🐕" },
+    { id: "cats", label: "Cats", icon: "🐈" },
+    { id: "birds", label: "Birds", icon: "🦜" },
+    { id: "small-pets", label: "Small Pets", icon: "🐹" },
+  ];
+
+  const brands = ["PetPro", "FelineFun", "ComfortPaws", "AvianCare", "CleanPaws", "GroomMaster", "HabitatPro", "VitaPet", "DentalCare", "WalkSafe"];
+  
+  const conditions = [
+    { id: "nutrition", label: "Nutrition & Food" },
+    { id: "toys", label: "Toys & Entertainment" },
+    { id: "comfort", label: "Comfort & Bedding" },
+    { id: "hygiene", label: "Hygiene & Cleaning" },
+    { id: "grooming", label: "Grooming" },
+    { id: "wellness", label: "Health & Wellness" },
+    { id: "dental", label: "Dental Care" },
+    { id: "housing", label: "Housing & Habitats" },
+    { id: "accessories", label: "Accessories" },
+  ];
+
+  const toggleCategory = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const toggleBrand = (brand: string) => {
+    setSelectedBrands((prev) =>
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+    );
+  };
+
+  const toggleCondition = (condition: string) => {
+    setSelectedConditions((prev) =>
+      prev.includes(condition)
+        ? prev.filter((c) => c !== condition)
+        : [...prev, condition]
+    );
+  };
+
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedBrands([]);
+    setSelectedConditions([]);
+    setPriceRange([0, 200]);
+    setSearchQuery("");
+  };
+
+  const filteredProducts = useMemo(() => {
+    let filtered = allProducts;
+
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Category filter
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((product) =>
+        selectedCategories.includes(product.category)
+      );
+    }
+
+    // Brand filter
+    if (selectedBrands.length > 0) {
+      filtered = filtered.filter((product) =>
+        selectedBrands.includes(product.brand)
+      );
+    }
+
+    // Condition filter
+    if (selectedConditions.length > 0) {
+      filtered = filtered.filter((product) =>
+        selectedConditions.includes(product.condition)
+      );
+    }
+
+    // Price range filter
+    filtered = filtered.filter(
+      (product) => product.price >= priceRange[0] && product.price <= priceRange[1]
+    );
+
+    // Sorting
+    switch (sortBy) {
+      case "price-low":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "price-high":
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case "reviews":
+        filtered.sort((a, b) => b.reviews - a.reviews);
+        break;
+    }
+
+    return filtered;
+  }, [searchQuery, selectedCategories, selectedBrands, selectedConditions, priceRange, sortBy]);
+
+  const activeFilterCount = selectedCategories.length + selectedBrands.length + selectedConditions.length;
+
+  const FilterContent = () => (
+    <div className="space-y-6">
+      {/* Categories */}
+      <div>
+        <h3 className="font-semibold mb-3">Pet Type</h3>
+        <div className="space-y-2">
+          {categories.map((category) => (
+            <div key={category.id} className="flex items-center space-x-2">
+              <Checkbox
+                id={`category-${category.id}`}
+                checked={selectedCategories.includes(category.id)}
+                onCheckedChange={() => toggleCategory(category.id)}
+              />
+              <Label
+                htmlFor={`category-${category.id}`}
+                className="text-sm font-normal cursor-pointer flex items-center gap-2"
+              >
+                <span>{category.icon}</span>
+                {category.label}
+              </Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Brands */}
+      <div>
+        <h3 className="font-semibold mb-3">Brand</h3>
+        <div className="space-y-2 max-h-48 overflow-y-auto">
+          {brands.map((brand) => (
+            <div key={brand} className="flex items-center space-x-2">
+              <Checkbox
+                id={`brand-${brand}`}
+                checked={selectedBrands.includes(brand)}
+                onCheckedChange={() => toggleBrand(brand)}
+              />
+              <Label
+                htmlFor={`brand-${brand}`}
+                className="text-sm font-normal cursor-pointer"
+              >
+                {brand}
+              </Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Conditions/Categories */}
+      <div>
+        <h3 className="font-semibold mb-3">Product Type</h3>
+        <div className="space-y-2 max-h-48 overflow-y-auto">
+          {conditions.map((condition) => (
+            <div key={condition.id} className="flex items-center space-x-2">
+              <Checkbox
+                id={`condition-${condition.id}`}
+                checked={selectedConditions.includes(condition.id)}
+                onCheckedChange={() => toggleCondition(condition.id)}
+              />
+              <Label
+                htmlFor={`condition-${condition.id}`}
+                className="text-sm font-normal cursor-pointer"
+              >
+                {condition.label}
+              </Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Price Range */}
+      <div>
+        <h3 className="font-semibold mb-3">Price Range</h3>
+        <div className="space-y-4">
+          <Slider
+            value={priceRange}
+            onValueChange={setPriceRange}
+            max={200}
+            step={10}
+            className="w-full"
+          />
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>${priceRange[0]}</span>
+            <span>${priceRange[1]}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Clear Filters */}
+      {activeFilterCount > 0 && (
+        <Button variant="outline" onClick={clearFilters} className="w-full">
+          Clear All Filters
+        </Button>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen">
+      <Header />
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            All Products
+          </h1>
+          <p className="text-muted-foreground">
+            Discover premium pet care products for your beloved companions
+          </p>
+        </div>
+
+        {/* Search and Sort Bar */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex-1">
+            <Input
+              type="search"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="rating">Highest Rated</SelectItem>
+                <SelectItem value="reviews">Most Reviews</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Mobile Filter Toggle */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="md:hidden">
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <Badge className="ml-2">{activeFilterCount}</Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6">
+                  <FilterContent />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+
+        {/* Active Filters */}
+        {activeFilterCount > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {selectedCategories.map((cat) => (
+              <Badge key={cat} variant="secondary" className="gap-1">
+                {categories.find((c) => c.id === cat)?.label}
+                <X
+                  className="h-3 w-3 cursor-pointer"
+                  onClick={() => toggleCategory(cat)}
+                />
+              </Badge>
+            ))}
+            {selectedBrands.map((brand) => (
+              <Badge key={brand} variant="secondary" className="gap-1">
+                {brand}
+                <X
+                  className="h-3 w-3 cursor-pointer"
+                  onClick={() => toggleBrand(brand)}
+                />
+              </Badge>
+            ))}
+            {selectedConditions.map((condition) => (
+              <Badge key={condition} variant="secondary" className="gap-1">
+                {conditions.find((c) => c.id === condition)?.label}
+                <X
+                  className="h-3 w-3 cursor-pointer"
+                  onClick={() => toggleCondition(condition)}
+                />
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        <div className="flex gap-8">
+          {/* Desktop Sidebar Filters */}
+          <aside className="hidden md:block w-64 shrink-0">
+            <div className="sticky top-24 bg-card border border-border rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-semibold text-lg">Filters</h2>
+                {activeFilterCount > 0 && (
+                  <Badge>{activeFilterCount}</Badge>
+                )}
+              </div>
+              <FilterContent />
+            </div>
+          </aside>
+
+          {/* Products Grid */}
+          <div className="flex-1">
+            <div className="mb-4 text-sm text-muted-foreground">
+              Showing {filteredProducts.length} of {allProducts.length} products
+            </div>
+
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    {...product}
+                    category={
+                      categories.find((c) => c.id === product.category)?.label ||
+                      product.category
+                    }
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-xl font-semibold mb-2">No products found</h3>
+                <p className="text-muted-foreground mb-4">
+                  Try adjusting your filters or search query
+                </p>
+                <Button onClick={clearFilters}>Clear All Filters</Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
