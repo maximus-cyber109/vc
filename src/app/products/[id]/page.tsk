@@ -1,0 +1,503 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Star, Heart, ShoppingCart, Truck, Shield, RotateCcw, Check, Minus, Plus } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ProductCard from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+
+export default function ProductDetailPage() {
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  // Mock product data
+  const product = {
+    id: "1",
+    name: "Premium Dog Food - Grain Free Formula",
+    price: 49.99,
+    originalPrice: 69.99,
+    rating: 4.8,
+    reviews: 234,
+    badge: "Best Seller",
+    category: "Dogs",
+    brand: "PetPro",
+    inStock: true,
+    images: [
+      "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=800",
+      "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800",
+      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800",
+      "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800",
+    ],
+    description:
+      "Give your furry friend the nutrition they deserve with our Premium Grain-Free Dog Food. Specially formulated with high-quality proteins, essential vitamins, and minerals to support optimal health and vitality.",
+    features: [
+      "100% grain-free formula",
+      "Real chicken as the #1 ingredient",
+      "No artificial flavors or preservatives",
+      "Rich in Omega-3 and Omega-6 fatty acids",
+      "Supports healthy skin and shiny coat",
+      "Digestive health support with probiotics",
+      "Made in USA with globally sourced ingredients",
+    ],
+    specifications: {
+      "Weight": "30 lbs",
+      "Protein": "28% min",
+      "Fat": "15% min",
+      "Fiber": "4% max",
+      "Moisture": "10% max",
+      "Calorie Content": "3,600 kcal/kg",
+    },
+  };
+
+  const relatedProducts = [
+    {
+      id: "2",
+      name: "Dog Dental Chew Treats",
+      price: 15.99,
+      image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600",
+      rating: 4.7,
+      reviews: 324,
+      category: "Dogs",
+    },
+    {
+      id: "3",
+      name: "Dog Harness - No-Pull Design",
+      price: 27.99,
+      image: "https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?w=600",
+      rating: 4.5,
+      reviews: 278,
+      category: "Dogs",
+    },
+    {
+      id: "4",
+      name: "Dog Grooming Kit - Professional",
+      price: 39.99,
+      originalPrice: 54.99,
+      image: "https://images.unsplash.com/photo-1616794897583-ffdf90aa1c0d?w=600",
+      rating: 4.8,
+      reviews: 267,
+      category: "Dogs",
+    },
+    {
+      id: "5",
+      name: "Orthopedic Pet Bed - Memory Foam",
+      price: 79.99,
+      originalPrice: 99.99,
+      image: "https://images.unsplash.com/photo-1617369120004-4fc4b71c1626?w=600",
+      rating: 4.9,
+      reviews: 412,
+      badge: "Top Rated",
+      category: "Dogs",
+    },
+  ];
+
+  const reviews = [
+    {
+      id: 1,
+      author: "Sarah M.",
+      avatar: "https://i.pravatar.cc/150?img=1",
+      rating: 5,
+      date: "2 weeks ago",
+      title: "My dog absolutely loves it!",
+      content:
+        "I've tried many different brands, but this is by far the best. My dog's coat has never looked shinier, and he has so much more energy. Highly recommend!",
+      helpful: 24,
+    },
+    {
+      id: 2,
+      author: "Michael R.",
+      avatar: "https://i.pravatar.cc/150?img=2",
+      rating: 5,
+      date: "1 month ago",
+      title: "Great quality ingredients",
+      content:
+        "As a veterinarian, I'm very particular about what I feed my pets. This food has excellent ingredients and my dogs are thriving on it.",
+      helpful: 18,
+    },
+    {
+      id: 3,
+      author: "Jennifer L.",
+      avatar: "https://i.pravatar.cc/150?img=3",
+      rating: 4,
+      date: "1 month ago",
+      title: "Good but pricey",
+      content:
+        "The quality is definitely there, and my dog loves it. Just wish it was a bit more affordable for the long term.",
+      helpful: 12,
+    },
+  ];
+
+  const ratingBreakdown = [
+    { stars: 5, count: 180, percentage: 77 },
+    { stars: 4, count: 35, percentage: 15 },
+    { stars: 3, count: 12, percentage: 5 },
+    { stars: 2, count: 5, percentage: 2 },
+    { stars: 1, count: 2, percentage: 1 },
+  ];
+
+  const discount = product.originalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
+
+  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  return (
+    <div className="min-h-screen">
+      <Header />
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+          <Link href="/" className="hover:text-foreground">
+            Home
+          </Link>
+          <span>/</span>
+          <Link href="/products" className="hover:text-foreground">
+            Products
+          </Link>
+          <span>/</span>
+          <Link href={`/products?category=${product.category.toLowerCase()}`} className="hover:text-foreground">
+            {product.category}
+          </Link>
+          <span>/</span>
+          <span className="text-foreground">{product.name}</span>
+        </div>
+
+        {/* Product Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* Image Gallery */}
+          <div>
+            <div className="relative aspect-square rounded-xl overflow-hidden bg-muted/20 mb-4">
+              <Image
+                src={product.images[selectedImage]}
+                alt={product.name}
+                fill
+                className="object-cover"
+                priority
+              />
+              {product.badge && (
+                <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground">
+                  {product.badge}
+                </Badge>
+              )}
+              {discount > 0 && (
+                <Badge className="absolute top-4 right-4 bg-destructive text-white">
+                  -{discount}%
+                </Badge>
+              )}
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+              {product.images.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(index)}
+                  className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedImage === index
+                      ? "border-primary"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <Image src={image} alt={`${product.name} ${index + 1}`} fill className="object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Product Info */}
+          <div>
+            <div className="mb-4">
+              <Badge variant="outline" className="mb-2">
+                {product.category}
+              </Badge>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                {product.name}
+              </h1>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-5 w-5 ${
+                        i < Math.floor(product.rating)
+                          ? "fill-primary text-primary"
+                          : "fill-muted text-muted"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-lg font-semibold">{product.rating}</span>
+                <span className="text-muted-foreground">({product.reviews} reviews)</span>
+              </div>
+            </div>
+
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="text-4xl font-bold text-primary">
+                ${product.price.toFixed(2)}
+              </span>
+              {product.originalPrice && (
+                <span className="text-2xl text-muted-foreground line-through">
+                  ${product.originalPrice.toFixed(2)}
+                </span>
+              )}
+              {discount > 0 && (
+                <Badge variant="destructive" className="text-lg px-3 py-1">
+                  Save {discount}%
+                </Badge>
+              )}
+            </div>
+
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              {product.description}
+            </p>
+
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3">Key Features:</h3>
+              <ul className="space-y-2">
+                {product.features.slice(0, 5).map((feature, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                    <span className="text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Stock Status */}
+            <div className="mb-6">
+              {product.inStock ? (
+                <div className="flex items-center gap-2 text-accent">
+                  <Check className="h-5 w-5" />
+                  <span className="font-semibold">In Stock - Ready to Ship</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-destructive">
+                  <span className="font-semibold">Out of Stock</span>
+                </div>
+              )}
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center border border-border rounded-lg">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={decrementQuantity}
+                  disabled={quantity <= 1}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="px-6 py-2 font-semibold">{quantity}</span>
+                <Button variant="ghost" size="icon" onClick={incrementQuantity}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Total: <span className="text-foreground font-bold text-lg">${(product.price * quantity).toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 mb-8">
+              <Button size="lg" className="flex-1 text-lg h-12">
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Add to Cart
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12"
+                onClick={() => setIsWishlisted(!isWishlisted)}
+              >
+                <Heart
+                  className={`h-5 w-5 ${isWishlisted ? "fill-red-500 text-red-500" : ""}`}
+                />
+              </Button>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t">
+              <div className="flex flex-col items-center text-center">
+                <Truck className="h-6 w-6 text-primary mb-2" />
+                <span className="text-xs font-semibold">Free Shipping</span>
+                <span className="text-xs text-muted-foreground">On orders $50+</span>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <Shield className="h-6 w-6 text-primary mb-2" />
+                <span className="text-xs font-semibold">Secure Payment</span>
+                <span className="text-xs text-muted-foreground">100% Protected</span>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <RotateCcw className="h-6 w-6 text-primary mb-2" />
+                <span className="text-xs font-semibold">Easy Returns</span>
+                <span className="text-xs text-muted-foreground">30-day policy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs Section */}
+        <Tabs defaultValue="description" className="mb-16">
+          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto">
+            <TabsTrigger value="description">Description</TabsTrigger>
+            <TabsTrigger value="specifications">Specifications</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews ({product.reviews})</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="description" className="mt-8">
+            <Card>
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  Product Description
+                </h2>
+                <p className="text-muted-foreground leading-relaxed mb-6">
+                  {product.description}
+                </p>
+                <h3 className="text-xl font-semibold mb-4">All Features:</h3>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {product.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="specifications" className="mt-8">
+            <Card>
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  Product Specifications
+                </h2>
+                <div className="space-y-4">
+                  {Object.entries(product.specifications).map(([key, value]) => (
+                    <div key={key} className="flex justify-between py-3 border-b border-border last:border-0">
+                      <span className="font-semibold">{key}:</span>
+                      <span className="text-muted-foreground">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reviews" className="mt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Rating Summary */}
+              <Card>
+                <CardContent className="p-8">
+                  <div className="text-center mb-6">
+                    <div className="text-5xl font-bold mb-2">{product.rating}</div>
+                    <div className="flex items-center justify-center gap-1 mb-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-5 w-5 ${
+                            i < Math.floor(product.rating)
+                              ? "fill-primary text-primary"
+                              : "fill-muted text-muted"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Based on {product.reviews} reviews
+                    </p>
+                  </div>
+
+                  <Separator className="mb-6" />
+
+                  <div className="space-y-3">
+                    {ratingBreakdown.map((item) => (
+                      <div key={item.stars} className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 w-12">
+                          <span className="text-sm font-medium">{item.stars}</span>
+                          <Star className="h-3 w-3 fill-primary text-primary" />
+                        </div>
+                        <Progress value={item.percentage} className="flex-1" />
+                        <span className="text-sm text-muted-foreground w-12 text-right">
+                          {item.count}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button className="w-full mt-6">Write a Review</Button>
+                </CardContent>
+              </Card>
+
+              {/* Reviews List */}
+              <div className="lg:col-span-2 space-y-6">
+                {reviews.map((review) => (
+                  <Card key={review.id}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={review.avatar} alt={review.author} />
+                          <AvatarFallback>{review.author[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <h4 className="font-semibold">{review.author}</h4>
+                              <p className="text-sm text-muted-foreground">{review.date}</p>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-4 w-4 ${
+                                    i < review.rating
+                                      ? "fill-primary text-primary"
+                                      : "fill-muted text-muted"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          <h5 className="font-semibold mb-2">{review.title}</h5>
+                          <p className="text-muted-foreground mb-3">{review.content}</p>
+                          <Button variant="ghost" size="sm" className="text-muted-foreground">
+                            👍 Helpful ({review.helpful})
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Related Products */}
+        <section>
+          <h2 className="text-3xl font-bold mb-8" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            You May Also Like
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
